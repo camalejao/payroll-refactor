@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import payroll.interpreter.IEmployeeInterpreter;
 import payroll.model.employee.Commissioned;
 import payroll.model.employee.Employee;
 import payroll.model.employee.Hourly;
@@ -47,6 +48,18 @@ public class Company implements Serializable {
 
     public List<Employee> getEmployees() {
         return this.employees;
+    }
+
+    public List<Employee> getEmployees(IEmployeeInterpreter interpreter) {
+        List<Employee> employeeList = new ArrayList<>();
+
+        for (Employee employee : this.employees) {
+            if (interpreter.isEmployeeEligible(employee)) {
+                employeeList.add(employee);
+            }
+        }
+        
+        return employeeList;
     }
 
     public List<Employee> getHourlyEmployees() {
