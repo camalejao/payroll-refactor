@@ -9,6 +9,9 @@ import java.util.Scanner;
 import java.util.Stack;
 
 import payroll.app.util.ConsoleUtils;
+import payroll.interpreter.CommissionedFilter;
+import payroll.interpreter.HourlyFilter;
+import payroll.interpreter.UnionFilter;
 import payroll.model.Company;
 
 public class PayrollApp {
@@ -68,7 +71,7 @@ public class PayrollApp {
                 case 4:
                     if (!company.isEmployeeListEmpty()) {
                         undoStack.push(saveState(company));
-                        EmployeeMenu.addTimecard(input, company.getHourlyEmployees());
+                        EmployeeMenu.addTimecard(input, company.getEmployees(new HourlyFilter()));
                     } else {
                         System.out.println("No employees registered to add it");
                     }
@@ -78,7 +81,7 @@ public class PayrollApp {
                 case 5:
                     if (!company.isEmployeeListEmpty()) {
                         undoStack.push(saveState(company));
-                        EmployeeMenu.addSaleReport(input, company.getCommissionedEmployees());
+                        EmployeeMenu.addSaleReport(input, company.getEmployees(new CommissionedFilter()));
                     } else {
                         System.out.println("No employees registered to add it");
                     }
@@ -88,7 +91,7 @@ public class PayrollApp {
                 case 6:
                     if (!company.isEmployeeListEmpty()) {
                         undoStack.push(saveState(company));
-                        EmployeeMenu.addServiceTax(input, company.getUnionMemberEmployees());
+                        EmployeeMenu.addServiceTax(input, company.getEmployees(new UnionFilter()));
                     } else {
                         System.out.println("No employees registered to add it");
                     }
