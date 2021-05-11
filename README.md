@@ -74,3 +74,17 @@ O objetivo do projeto é construir um sistema de folha de pagamento. O sistema c
 - Quantidade numerosa de métodos na classe EmployeeMenu
 
 - Classe Company com os métodos getHourlyEmployees(), getCommissionedEmployees(), getSalariedEmployees() e getUnionMemberEmployees(), que agrupam uma linguagem implícita
+
+## Refatoração
+
+### Strategy
+
+O Design Pattern Strategy foi aplicado para solucionar um code smell da classe PaymentSchedule. Na implementação anterior [(disponível aqui)](https://github.com/camalejao/payroll/blob/e75e71c3ca3efb70e30e47bb039723f4414cb01a/src/payroll/model/payments/PaymentSchedule.java#L56), os métodos toString(), getDividingFactor() e checkIfDateIsInSchedule() dessa classe apresentavam comportamentos diferentes de acordo o tipo de agenda (semanal/bi-semanal/mensal), causando a necessidade de várias decisões lógicas para definir qual o comportamento adequado.
+
+Portanto, com o padrão Strategy foi defininda uma interface com os métodos abstratos e foi criada uma classe concreta para cada tipo de agenda, com as implementações do comportamento adequado para cada uma delas. Na classe PaymentSchedule, foi adicionado um atributo strategy e foram mantidos os métodos, os quais foram refatorados para retornar o comportamento definido na estratégia. [Aqui](https://github.com/camalejao/payroll-refactor/tree/main/src/payroll/strategy) está a interface e as classes para cada agenda, e a classe PaymentSchedule refatorada [está aqui](https://github.com/camalejao/payroll-refactor/blob/main/src/payroll/model/payments/PaymentSchedule.java).
+
+### Interpreter
+
+O Design Pattern Interpreter foi aplicado para solucionar um code smell da classe Company [(aqui)](https://github.com/camalejao/payroll/blob/e75e71c3ca3efb70e30e47bb039723f4414cb01a/src/payroll/model/Company.java#L52), onde os métodos getHourlyEmployees(), getCommissionedEmployees(), getSalariedEmployees() e getUnionMemberEmployees() agrupam uma linguagem implícita, que é de "filtrar" a lista de funcionários de acordo com algum critério, especificamente de acordo com o tipo de funcionário instanciado ou se fazem parte do sindicato.
+
+Desse modo, foi definida uma interface com o método abstrato para decidir se um funcionário é elegível ou não para o filtro aplicado, e foram criadas classes concretas que implementam esse método de acordo com cada filtro. Na classe Company, os métodos do smell foram substituídos por um método getEmployees que recebe como parâmetro um dos filtros e retorna uma lista com os funcionários elegíveis pelo filtro. [Aqui](https://github.com/camalejao/payroll-refactor/blob/ed72fe0624a1a687c0b565214a143beef2746cda/src/payroll/model/Company.java#L51) está o método refatorado de Company e [aqui estão](https://github.com/camalejao/payroll-refactor/tree/main/src/payroll/interpreter) as classes e a interface do padrão Interpreter.
