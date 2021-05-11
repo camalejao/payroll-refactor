@@ -15,22 +15,15 @@ public class Paycheck implements Serializable {
 
     private Double deductions;
 
-    private boolean includesUnionTax;
-
     private PaymentMethod paymentMethod;
 
-    public Paycheck(Employee employee, LocalDate date) {
-        this.employee = employee;
-        this.date = date;
-    }
-
+    
     public Paycheck(Employee employee, LocalDate date, Double grossPay,
-                    Double deductions, boolean includesUnionTax) {
+                    Double deductions) {
         this.employee = employee;
         this.date = date;
         this.grossPay = grossPay;
         this.deductions = deductions;
-        this.includesUnionTax = includesUnionTax;
         this.paymentMethod = employee.getPaymentInfo().getPaymentMethod();
     }
     
@@ -68,19 +61,6 @@ public class Paycheck implements Serializable {
 
     public void setDeductions(Double deductions) {
         this.deductions = deductions;
-    }
-
-
-    public boolean isIncludesUnionTax() {
-        return this.includesUnionTax;
-    }
-
-    public boolean getIncludesUnionTax() {
-        return this.includesUnionTax;
-    }
-
-    public void setIncludesUnionTax(boolean includesUnionTax) {
-        this.includesUnionTax = includesUnionTax;
     }
 
 

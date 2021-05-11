@@ -11,14 +11,6 @@ public class Salaried extends Employee {
     private Double salary;
 
 
-    public Salaried() {
-
-    }
-
-    public Salaried(Double salary) {
-        this.salary = salary;
-    }
-
     public Salaried(UUID id, String name, String address, UnionMember unionMember,
                     PaymentInfo paymentInfo, Double salary) {
         super(id, name, address, unionMember, paymentInfo);

@@ -20,16 +20,6 @@ public class Commissioned extends Employee {
     private List<SaleReport> saleReports;
     
 
-    public Commissioned() {
-
-    }
-
-    public Commissioned(Double fixedSalary, Double commissionRate) {
-        this.fixedSalary = fixedSalary;
-        this.commissionRate = commissionRate;
-        this.saleReports = new ArrayList<SaleReport>();
-    }
-
     public Commissioned(UUID id, String name, String address, UnionMember unionMember,
                         PaymentInfo paymentInfo, Double fixedSalary, Double commissionRate) {
         super(id, name, address, unionMember, paymentInfo);

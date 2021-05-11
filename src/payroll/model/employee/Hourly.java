@@ -20,15 +20,6 @@ public class Hourly extends Employee {
     private List<Timecard> timecards;
 
 
-    public Hourly() {
-
-    }
-
-    public Hourly(Double hourlyRate) {
-        this.hourlyRate = hourlyRate;
-        this.timecards = new ArrayList<Timecard>();
-    }
-
     public Hourly(UUID id, String name, String address, UnionMember unionMember,
                     PaymentInfo paymentInfo, Double hourlyRate) {
         super(id, name, address, unionMember, paymentInfo);

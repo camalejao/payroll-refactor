@@ -20,11 +20,6 @@ public class PaymentInfo implements Serializable {
     private List<Paycheck> paychecks;
 
 
-    public PaymentInfo() {
-
-    }
-
-
     public PaymentInfo(int bank, int agency, int account,
                     PaymentMethod paymentMethod, PaymentSchedule paymentSchedule) {
         this.bank = bank;
