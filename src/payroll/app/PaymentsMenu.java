@@ -15,6 +15,10 @@ import payroll.model.payments.PaymentMethod;
 import payroll.model.payments.PaymentSchedule;
 import payroll.model.payments.PaymentsReport;
 import payroll.model.payments.Schedule;
+import payroll.strategy.BiweeklyStrategy;
+import payroll.strategy.IScheduleStrategy;
+import payroll.strategy.MonthlyStrategy;
+import payroll.strategy.WeeklyStrategy;
 
 public class PaymentsMenu {
     
@@ -93,6 +97,10 @@ public class PaymentsMenu {
 
     public static PaymentSchedule registerNewPaymentSchedule(Scanner input) {
         
+        IScheduleStrategy monthlyStrategy = new MonthlyStrategy();
+        IScheduleStrategy weeklyStrategy = new WeeklyStrategy();
+        IScheduleStrategy biweeklyStrategy = new BiweeklyStrategy();
+
         String message = "Select the type of schedule:\n";
         message += "[1] monthly\n[2] weekly 1 (every week)\n[3] weekly 2 (every two weeks)\n";
         int answer = ConsoleUtils.readIntInput(input, message);
@@ -104,9 +112,9 @@ public class PaymentsMenu {
             int day = ConsoleUtils.readIntInput(input, message);
             
             if (day >= 1 && day <= 28) {
-                return new PaymentSchedule(Schedule.MONTHLY, day, null);
+                return new PaymentSchedule(Schedule.MONTHLY, day, null, monthlyStrategy);
             } else {
-                return new PaymentSchedule(Schedule.MONTHLY, null, null);
+                return new PaymentSchedule(Schedule.MONTHLY, null, null, monthlyStrategy);
             }
 
         } else if (answer == 2) {
@@ -116,10 +124,10 @@ public class PaymentsMenu {
             int dayOfWeek = ConsoleUtils.readIntInput(input, message);
 
             if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-                return new PaymentSchedule(Schedule.WEEKLY, null, DayOfWeek.of(dayOfWeek));
+                return new PaymentSchedule(Schedule.WEEKLY, null, DayOfWeek.of(dayOfWeek), weeklyStrategy);
             } else {
                 System.out.println("Invalid option, default will be Monday.");
-                return new PaymentSchedule(Schedule.WEEKLY, null, DayOfWeek.of(dayOfWeek));
+                return new PaymentSchedule(Schedule.WEEKLY, null, DayOfWeek.of(dayOfWeek), weeklyStrategy);
             }
 
         } else if (answer == 3) {
@@ -129,15 +137,15 @@ public class PaymentsMenu {
             int dayOfWeek = ConsoleUtils.readIntInput(input, message);
 
             if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-                return new PaymentSchedule(Schedule.BIWEEKLY, null, DayOfWeek.of(dayOfWeek));
+                return new PaymentSchedule(Schedule.BIWEEKLY, null, DayOfWeek.of(dayOfWeek), biweeklyStrategy);
             } else {
                 System.out.println("Invalid option, default will be Monday.");
-                return new PaymentSchedule(Schedule.BIWEEKLY, null, DayOfWeek.of(dayOfWeek));
+                return new PaymentSchedule(Schedule.BIWEEKLY, null, DayOfWeek.of(dayOfWeek), biweeklyStrategy);
             }
             
         } else {
             System.out.println("Invalid option, default will be 'monthly 15'.");
-            return new PaymentSchedule(Schedule.MONTHLY, 15, null);
+            return new PaymentSchedule(Schedule.MONTHLY, 15, null, monthlyStrategy);
         }
     }
 }

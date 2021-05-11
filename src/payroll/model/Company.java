@@ -15,6 +15,9 @@ import payroll.model.employee.Salaried;
 import payroll.model.payments.PaymentSchedule;
 import payroll.model.payments.PaymentsReport;
 import payroll.model.payments.Schedule;
+import payroll.strategy.BiweeklyStrategy;
+import payroll.strategy.MonthlyStrategy;
+import payroll.strategy.WeeklyStrategy;
 
 public class Company implements Serializable {
     
@@ -31,9 +34,9 @@ public class Company implements Serializable {
         this.paymentSchedules = new ArrayList<PaymentSchedule>();
 
         // default payment schedules
-        this.paymentSchedules.add(new PaymentSchedule(Schedule.WEEKLY, null, DayOfWeek.FRIDAY));
-        this.paymentSchedules.add(new PaymentSchedule(Schedule.MONTHLY, null, null));
-        this.paymentSchedules.add(new PaymentSchedule(Schedule.BIWEEKLY, null, DayOfWeek.FRIDAY));
+        this.paymentSchedules.add(new PaymentSchedule(Schedule.WEEKLY, null, DayOfWeek.FRIDAY, new WeeklyStrategy()));
+        this.paymentSchedules.add(new PaymentSchedule(Schedule.MONTHLY, null, null, new MonthlyStrategy()));
+        this.paymentSchedules.add(new PaymentSchedule(Schedule.BIWEEKLY, null, DayOfWeek.FRIDAY, new BiweeklyStrategy()));
     }
 
 

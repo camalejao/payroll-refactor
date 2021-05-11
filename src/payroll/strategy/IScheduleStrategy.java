@@ -14,7 +14,7 @@ public interface IScheduleStrategy {
     public boolean checkIfDateIsInSchedule(PaymentSchedule paymentSchedule, LocalDate date, int weekCounter);
 
     default public String appendScheduleDescription(Schedule schedule) {
-        return schedule.toString() + " ";
+        return schedule.getScheduleDescription() + " ";
     }
 
 }

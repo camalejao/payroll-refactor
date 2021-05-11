@@ -1,12 +1,13 @@
 package payroll.strategy;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
 import payroll.model.payments.PaymentSchedule;
 
-public class WeeklyStrategy implements IScheduleStrategy {
+public class WeeklyStrategy implements IScheduleStrategy, Serializable {
 
     @Override
     public String getScheduleString(PaymentSchedule paymentSchedule) {

@@ -1,12 +1,13 @@
 package payroll.strategy;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 
 import payroll.app.util.DateUtils;
 import payroll.model.payments.PaymentSchedule;
 
-public class MonthlyStrategy implements IScheduleStrategy {
+public class MonthlyStrategy implements IScheduleStrategy, Serializable {
 
     private String appendDayOfMonth(Integer dayOfMonth) {
         return dayOfMonth != null ? dayOfMonth.toString() : "$";

@@ -3,11 +3,8 @@ package payroll.model.payments;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.time.temporal.TemporalAdjusters;
-import java.util.Locale;
 
-import payroll.app.util.DateUtils;
+import payroll.strategy.IScheduleStrategy;
 
 public class PaymentSchedule implements Serializable {
     
@@ -17,11 +14,15 @@ public class PaymentSchedule implements Serializable {
 
     private DayOfWeek dayOfWeek;
 
-    
-    public PaymentSchedule(Schedule schedule, Integer dayOfMonth, DayOfWeek dayOfWeek) {
+    private IScheduleStrategy strategy;
+
+
+    public PaymentSchedule(Schedule schedule, Integer dayOfMonth, DayOfWeek dayOfWeek,
+                            IScheduleStrategy strategy) {
         this.schedule = schedule;
         this.dayOfMonth = dayOfMonth;
         this.dayOfWeek = dayOfWeek;
+        this.strategy = strategy;
     }
 
 
@@ -54,52 +55,16 @@ public class PaymentSchedule implements Serializable {
 
     @Override
     public String toString() {
-        String str = this.schedule.getScheduleDescription() + " ";
-
-        if (this.schedule == Schedule.MONTHLY) {
-            if (this.dayOfMonth != null) {
-                str += this.dayOfMonth;
-            } else {
-                str += "$";
-            }
-        } else {
-            str += this.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.US);
-        }
-
-        return str;
+        return this.strategy.getScheduleString(this);
     }
 
 
     public int getDividingFactor() {
-        if (this.getSchedule() == Schedule.MONTHLY) {
-            return 1;
-        } else if (this.getSchedule() == Schedule.WEEKLY) {
-            return 4;
-        } else { // BIWEEKLY
-            return 2;
-        }
+        return this.strategy.getDividingFactor();
     }
 
 
     public boolean checkIfDateIsInSchedule(int weekCounter, LocalDate date) {
-        if (this.schedule == Schedule.MONTHLY) {
-
-            if (this.dayOfMonth != null) {
-                return this.dayOfMonth == date.getDayOfMonth();
-            } else {
-                return date.isEqual(DateUtils.getLastWorkingDateOfMonth(date.with(TemporalAdjusters.lastDayOfMonth())));
-            }
-
-        } else if (this.schedule == Schedule.WEEKLY) {
-            
-            return this.dayOfWeek == date.getDayOfWeek();
-
-        } else if (this.schedule == Schedule.BIWEEKLY) {
-
-            return this.dayOfWeek == date.getDayOfWeek() && weekCounter % 2 == 0;
-
-        }
-
-        return false;
+        return this.strategy.checkIfDateIsInSchedule(this, date, weekCounter);
     }
 }
