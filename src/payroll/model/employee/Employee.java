@@ -2,14 +2,10 @@ package payroll.model.employee;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import payroll.model.payments.Paycheck;
 import payroll.model.payments.PaymentInfo;
-import payroll.model.union.ServiceTax;
 import payroll.model.union.UnionMember;
 
 public abstract class Employee implements Serializable {
@@ -84,18 +80,21 @@ public abstract class Employee implements Serializable {
     }
 
 
+    private String appendUnionMemberString() {
+        if (getUnionMember() != null) {
+            return getUnionMember().toString();
+        } else {
+            return "\nUnion: not a union member";
+        }
+    }
+
     @Override
     public String toString() {
-        String str = "Employee ID: " + getId();
-        str += "\nName: " + getName();
-        str += "\nAddress: " + getAddress();
-        str += "\nPayment Info: " + getPaymentInfo().toString();
-        if (getUnionMember() != null) {
-            str += getUnionMember().toString();
-        } else {
-            str += "\nUnion: not a union member";
-        }
-        return str;
+        return "Employee ID: " + getId() +
+            "\nName: " + getName() +
+            "\nAddress: " + getAddress() +
+            "\nPayment Info: " + getPaymentInfo().toString() +
+            appendUnionMemberString();
     }
 
     public String printBasicInfo() {
@@ -104,65 +103,60 @@ public abstract class Employee implements Serializable {
 
 
     public Double getUnionFee() {
-        Double fee = 0.0;
         UnionMember unionMember = this.getUnionMember();
-        if (unionMember != null) {
-            if (unionMember.isActive()) fee += this.getUnionMember().getFee();
+        
+        if (unionMember != null && unionMember.isActive()) {
+            return unionMember.getFee();
+        } else {
+            return 0.0;
         }
-        return fee;
     }
 
 
     public Double calcServiceTaxes() {
         Double taxes = 0.0;
-        List<Paycheck> paychecks = this.getPaymentInfo().getPaychecks();
-        List<ServiceTax> validTaxes;
         UnionMember unionMember = this.getUnionMember();
         
         if (unionMember != null) {
-            if (paychecks != null && !paychecks.isEmpty()) {
-                LocalDate lastPaymentDate = paychecks.get(paychecks.size() - 1).getDate();
-                Predicate<ServiceTax> dateFilter = tax -> tax.getDate().isAfter(lastPaymentDate);
-                validTaxes = unionMember.getServiceTaxes().stream().filter(dateFilter).collect(Collectors.toList());
+            Paycheck lastPayment = this.getPaymentInfo().getLastPayment();
+            
+            if (lastPayment != null) {
+                taxes += unionMember.getServiceTaxesSumAfterDate(lastPayment.getDate());
             } else {
-                validTaxes = unionMember.getServiceTaxes();
-            }
-
-            for (ServiceTax s : validTaxes) {
-               taxes += s.getValue(); 
+                taxes = unionMember.getServiceTaxesSum();
             }
         }
 
         return taxes;
     }
 
-    public Paycheck processPayment(LocalDate paymentDate) {
-        Paycheck newPaycheck = null;
-
-        Double grossPay = this.calcPayment(paymentDate);
-        Double deductions = this.calcServiceTaxes();
+    public Double calcDeductions(LocalDate paymentDate) {
+        Double serviceTaxes = this.calcServiceTaxes();
         Double unionFee = this.getUnionFee();
-        boolean includes = false;
-        
-        if (unionFee > 0.0) {
-            Paycheck lastPayment = this.getPaymentInfo().getLastPayment();
 
-            if (lastPayment != null) {
-                LocalDate lastPaymentDate = lastPayment.getDate();
-                
-                if (!(lastPaymentDate.getMonthValue() == paymentDate.getMonthValue()
-                    && lastPaymentDate.getYear() == paymentDate.getYear())) {
-                    deductions += unionFee;
-                    includes = true;
-                }
+        Paycheck lastPayment = this.getPaymentInfo().getLastPayment();
 
-            } else {
-                deductions += unionFee;
-                includes = true;
+        if (lastPayment != null) {
+            LocalDate lastPaymentDate = lastPayment.getDate();
+            
+            // checks if union fee was included in a payment in the same month
+            if (!(lastPaymentDate.getMonthValue() == paymentDate.getMonthValue()
+                && lastPaymentDate.getYear() == paymentDate.getYear())) {
+                return serviceTaxes + unionFee;
             }
-        }
 
-        newPaycheck = new Paycheck(this, paymentDate, grossPay, deductions, includes);
+        } else {
+            return serviceTaxes + unionFee;
+        }
+        
+        return serviceTaxes;
+    }
+
+    public Paycheck processPayment(LocalDate paymentDate) {
+        Double grossPay = this.calcPayment(paymentDate);
+        Double deductions = this.calcDeductions(paymentDate); 
+
+        Paycheck newPaycheck = new Paycheck(this, paymentDate, grossPay, deductions);
 
         this.getPaymentInfo().getPaychecks().add(newPaycheck);
 

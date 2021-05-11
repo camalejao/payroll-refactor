@@ -1,9 +1,12 @@
 package payroll.model.union;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class UnionMember implements Serializable {
     
@@ -64,13 +67,34 @@ public class UnionMember implements Serializable {
     }
 
 
+    public List<ServiceTax> getServiceTaxesAfterDate(LocalDate date) {
+        Predicate<ServiceTax> dateFilter = tax -> tax.getDate().isAfter(date);
+        return this.serviceTaxes.stream().filter(dateFilter).collect(Collectors.toList());
+    }
+
+    public Double getServiceTaxesSum() {
+        Double sum = 0.0;
+        for (ServiceTax s : this.serviceTaxes) {
+            sum += s.getValue(); 
+        }
+        return sum;
+    }
+
+    public Double getServiceTaxesSumAfterDate(LocalDate date) {
+        Double sum = 0.0;
+        for (ServiceTax s : getServiceTaxesAfterDate(date)) {
+            sum += s.getValue(); 
+        }
+        return sum;
+    }
+
+
     @Override
     public String toString() {
-        String str = "\nUnion ID: " + getId();
-        str += "\nIs an Active Union Member: " + getActive();
-        str += "\nUnion Fee: " + getFee();
-        str += "\nServiceTaxes='" + getServiceTaxStrings() + "'";
-        return str;
+        return "\nUnion ID: " + getId() +
+            "\nIs an Active Union Member: " + getActive() +
+            "\nUnion Fee: " + getFee() +
+            "\nServiceTaxes='" + getServiceTaxStrings() + "'";
     }
 
 
