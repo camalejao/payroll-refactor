@@ -101,15 +101,10 @@ public class PaymentsMenu {
         IScheduleStrategy weeklyStrategy = new WeeklyStrategy();
         IScheduleStrategy biweeklyStrategy = new BiweeklyStrategy();
 
-        String message = "Select the type of schedule:\n";
-        message += "[1] monthly\n[2] weekly 1 (every week)\n[3] weekly 2 (every two weeks)\n";
-        int answer = ConsoleUtils.readIntInput(input, message);
+        int answer = ConsoleUtils.readIntInput(input, getScheduleTypeInputMessage());
 
         if (answer == 1) {
-            message = "Now, enter the day of month.\n";
-            message += "It needs to be a number between 1 and 28; if you enter a number out of this range,";
-            message += " the selected value will be $ (last working day of the month):";
-            int day = ConsoleUtils.readIntInput(input, message);
+            int day = ConsoleUtils.readIntInput(input, getDayOfMonthInputMessage());
             
             if (day >= 1 && day <= 28) {
                 return new PaymentSchedule(Schedule.MONTHLY, day, null, monthlyStrategy);
@@ -118,10 +113,7 @@ public class PaymentsMenu {
             }
 
         } else if (answer == 2) {
-            message = "Now, select the day of week. (only work days allowed)\n";
-            message += "It needs to be a number between 1 and 5, meaning the days from Monday to Friday.\n";
-            message += "[1] Monday\n[2] Tuesday\n[3] Wendnesday\n[4] Thursday\n[5] Friday\n";
-            int dayOfWeek = ConsoleUtils.readIntInput(input, message);
+            int dayOfWeek = ConsoleUtils.readIntInput(input, getDayOfWeekInputMessage());
 
             if (dayOfWeek >= 1 && dayOfWeek <= 5) {
                 return new PaymentSchedule(Schedule.WEEKLY, null, DayOfWeek.of(dayOfWeek), weeklyStrategy);
@@ -131,10 +123,7 @@ public class PaymentsMenu {
             }
 
         } else if (answer == 3) {
-            message = "Now, select the day of week. (only work days allowed)\n";
-            message += "It needs to be a number between 1 and 5, meaning the days from Monday to Friday.\n";
-            message += "[1] Monday\n[2] Tuesday\n[3] Wendnesday\n[4] Thursday\n[5] Friday\n";
-            int dayOfWeek = ConsoleUtils.readIntInput(input, message);
+            int dayOfWeek = ConsoleUtils.readIntInput(input, getDayOfWeekInputMessage());
 
             if (dayOfWeek >= 1 && dayOfWeek <= 5) {
                 return new PaymentSchedule(Schedule.BIWEEKLY, null, DayOfWeek.of(dayOfWeek), biweeklyStrategy);
@@ -147,5 +136,22 @@ public class PaymentsMenu {
             System.out.println("Invalid option, default will be 'monthly 15'.");
             return new PaymentSchedule(Schedule.MONTHLY, 15, null, monthlyStrategy);
         }
+    }
+
+    private static String getScheduleTypeInputMessage() {
+        return "Select the type of schedule:\n" +
+            "[1] monthly\n[2] weekly 1 (every week)\n[3] weekly 2 (every two weeks)\n";
+    }
+
+    private static String getDayOfWeekInputMessage() {
+        return "Now, select the day of week. (only work days allowed)\n" +
+        "It needs to be a number between 1 and 5, meaning the days from Monday to Friday.\n" +
+        "[1] Monday\n[2] Tuesday\n[3] Wendnesday\n[4] Thursday\n[5] Friday\n";
+    }
+
+    private static String getDayOfMonthInputMessage() {
+        return "Now, enter the day of month.\n" +
+            "It needs to be a number between 1 and 28; if you enter a number out of this range," +
+            " the selected value will be $ (last working day of the month):";
     }
 }
