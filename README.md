@@ -88,3 +88,20 @@ Portanto, com o padrão Strategy foi defininda uma interface com os métodos abs
 O Design Pattern Interpreter foi aplicado para solucionar um code smell da classe Company [(aqui)](https://github.com/camalejao/payroll/blob/e75e71c3ca3efb70e30e47bb039723f4414cb01a/src/payroll/model/Company.java#L52), onde os métodos getHourlyEmployees(), getCommissionedEmployees(), getSalariedEmployees() e getUnionMemberEmployees() agrupam uma linguagem implícita, que é de "filtrar" a lista de funcionários de acordo com algum critério, especificamente de acordo com o tipo de funcionário instanciado ou se fazem parte do sindicato.
 
 Desse modo, foi definida uma interface com o método abstrato para decidir se um funcionário é elegível ou não para o filtro aplicado, e foram criadas classes concretas que implementam esse método de acordo com cada filtro. Na classe Company, os métodos do smell foram substituídos por um método getEmployees que recebe como parâmetro um dos filtros e retorna uma lista com os funcionários elegíveis pelo filtro. [Aqui](https://github.com/camalejao/payroll-refactor/blob/ed72fe0624a1a687c0b565214a143beef2746cda/src/payroll/model/Company.java#L51) está o método refatorado de Company e [aqui estão](https://github.com/camalejao/payroll-refactor/tree/main/src/payroll/interpreter) as classes e a interface do padrão Interpreter.
+
+### Move Accumulation to Collecting Parameter
+
+Vários métodos extensos foram reformulados para evitar acumulação e assim aumentar a modularização e clareza.
+
+O [commit](https://github.com/camalejao/payroll-refactor/commit/36dd4c0dbd49591fb931751be5a52f63e3f5b615) mostra as alterações feitas na classe Employee: a criação de um novo método para simplificar o toString(), e a criação de novos métodos tanto em Employee quanto em UnionMember para simplificar e modularizar os métodos processPayment() e calcServiceTaxes().
+
+Já na classe PaymentsMenu, as [alterações](https://github.com/camalejao/payroll-refactor/commit/3e96e4c0d8da839f361d9f0d0428f14a0920b8a8) foram de substituir o uso de variáveis locais que acumulavam informações de texto (String) para métodos que retornam prontamente uma mensagem específica.
+
+### Move Method
+
+Os métodos getServiceTaxStrings(), getTimecardStrings() e getSaleReportStrings() foram movidos respectivamente para as classes ServiceTax, Timecard e SaleReport. O nome dos métodos foi alterado para toString() e eles recebem uma lista como parâmetro. As alterações estão registradas [aqui](https://github.com/camalejao/payroll-refactor/commit/f2339166f30d3d5ae43c2f2121789b777561b32c).
+
+### Remoção de Generative Speculation
+
+Alguns métodos construtores foram criados pensando em situações específicas, mas nunca foram utilizados de fato. Logo, foram removidos na refatoração. O mesmo aconteceu com o atributo includesUnionTax da classe Paycheck. Essas alterações estão registradas [aqui](https://github.com/camalejao/payroll-refactor/commit/d78fa46d15daf944ef0663a54c57e65d5a36cee8).
+
