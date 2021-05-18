@@ -50,17 +50,10 @@ public class Hourly extends Employee {
     public String toString() {
         return super.toString() + "\nHourly: {" +
             " hourlyRate='" + getHourlyRate() + "'" +
-            ", timecards='" + getTimecardStrings() + "'" +
+            ", timecards='" + Timecard.toString(this.timecards) + "'" +
             "}";
     }
 
-    private String getTimecardStrings() {
-        String str = "";
-        for (Timecard tc : this.timecards) {
-            str += "(" + tc.toString() + ") ";
-        }
-        return str;
-    }
 
     @Override
     Double calcPayment(LocalDate paymentDate) {

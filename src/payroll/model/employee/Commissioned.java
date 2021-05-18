@@ -62,17 +62,10 @@ public class Commissioned extends Employee {
         return super.toString() + "\nCommissioned: {" +
             " fixedSalary='" + getFixedSalary() + "'" +
             ", commissionRate='" + getCommissionRate() + "%'" +
-            ", saleReports='" + getSaleReportStrings() + "'" +
+            ", saleReports='" + SaleReport.toString(this.saleReports) + "'" +
             "}";
     }
 
-    private String getSaleReportStrings() {
-        String str = "";
-        for (SaleReport sr : this.saleReports) {
-            str += "(" + sr.toString() + "), ";
-        }
-        return str;
-    }
 
     @Override
     Double calcPayment(LocalDate paymentDate) {

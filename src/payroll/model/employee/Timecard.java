@@ -3,6 +3,7 @@ package payroll.model.employee;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class Timecard implements Serializable {
 
@@ -51,5 +52,13 @@ public class Timecard implements Serializable {
     @Override
     public String toString() {
         return "date: " + this.date.toString() + ", time: " + this.timeIn + "-" + this.timeOut;
+    }
+
+    public static String toString(List<Timecard> timecards) {
+        String str = "";
+        for (Timecard tc : timecards) {
+            str += "(" + tc.toString() + ") ";
+        }
+        return str;
     }
 }

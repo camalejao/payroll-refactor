@@ -2,6 +2,7 @@ package payroll.model.employee;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 public class SaleReport implements Serializable {
 
@@ -36,5 +37,13 @@ public class SaleReport implements Serializable {
     @Override
     public String toString() {
         return "value: " + this.value + ", date: " + this.date.toString();
+    }
+
+    public static String toString(List<SaleReport> saleReports) {
+        String str = "";
+        for (SaleReport sr : saleReports) {
+            str += "(" + sr.toString() + "), ";
+        }
+        return str;
     }
 }

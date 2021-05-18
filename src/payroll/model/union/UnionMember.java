@@ -94,15 +94,6 @@ public class UnionMember implements Serializable {
         return "\nUnion ID: " + getId() +
             "\nIs an Active Union Member: " + getActive() +
             "\nUnion Fee: " + getFee() +
-            "\nServiceTaxes='" + getServiceTaxStrings() + "'";
-    }
-
-
-    private String getServiceTaxStrings() {
-        String str = "";
-        for (ServiceTax st : this.serviceTaxes) {
-            str += "(" + st.toString() + "), ";
-        }
-        return str;
+            "\nServiceTaxes='" + ServiceTax.toString(this.serviceTaxes) + "'";
     }
 }

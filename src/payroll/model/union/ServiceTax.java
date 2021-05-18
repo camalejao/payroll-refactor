@@ -2,6 +2,7 @@ package payroll.model.union;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 public class ServiceTax implements Serializable {
     
@@ -36,5 +37,13 @@ public class ServiceTax implements Serializable {
     @Override
     public String toString() {
         return "value: " + this.value + ", date: " + this.date.toString();
+    }
+
+    public static String toString(List<ServiceTax> serviceTaxes) {
+        String str = "";
+        for (ServiceTax st : serviceTaxes) {
+            str += "(" + st.toString() + "), ";
+        }
+        return str;
     }
 }
